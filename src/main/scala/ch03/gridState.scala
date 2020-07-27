@@ -56,19 +56,19 @@ object Main extends App {
   println((program run World(Vector(), Vector())).value)
 
 //  var world = World(Vector(), Vector())
-//  val (grid, world1) = world.createGrid(3000)
+//  val (grid.scala, world1) = world.createGrid(3000)
 //  val (tv, world2) = world1.createAppliance(150)
 //  val (radio, world3) = world2.createAppliance(30)
-//  val world4 = world3.plugInto(tv, grid)
-//  val world5 = world4.plugInto(radio, grid)
-//  println(world5.residualPower(grid))
+//  val world4 = world3.plugInto(tv, grid.scala)
+//  val world5 = world4.plugInto(radio, grid.scala)
+//  println(world5.residualPower(grid.scala))
 //  //val Right(world6) = world5.on(tv)
 //  val Right(world6) = world5.on(tv)
-//  println(world6.residualPower(grid))
+//  println(world6.residualPower(grid.scala))
 //  val world7 = world6.off(tv)
-//  println(world7.residualPower(grid))
+//  println(world7.residualPower(grid.scala))
 //  val (monster, world8) = world7.createAppliance(100000000)
-//  val world9 = world8.plugInto(monster, grid)
+//  val world9 = world8.plugInto(monster, grid.scala)
 //  val world10 = world9.on(monster)
 //
 //
@@ -87,5 +87,5 @@ object Main extends App {
 
 //val (tv, world2) = world1.createAppliance(150)
 //val tv = new Appliance(150), val radio = new Appliance(30)
-//val grid = new Grid(3000)
+//val grid.scala = new Grid(3000)
 
