@@ -1,60 +1,53 @@
-package ch03
-
-import cats.data.State
-
-case class Appliance(power: Int, isOn: Boolean, grid: Option[Int])
-case class Grid(capa: Int)
-case class World(appliance: Vector[Appliance], grid: Vector[Grid])
-
-object Main extends App {
-  def createGrid(power: Int): State[World, Int] = State { world =>
-    val grid = Grid(power)
-    (world.copy(grid = world.grid :+ grid), world.grid.size)
-  }
-
-  def createAppliance(power: Int): State[World, Int] = State { world =>
-    val appliance = Appliance(power, isOn = false, None)
-    (world.copy(appliance = world.appliance :+ appliance), world.appliance.size)
-  }
-
-  def plugInto(applianceId: Int, gridId: Int): State[World, Unit] = State { world =>
-    val app = world.appliance(applianceId)
-    (world.copy(world.appliance.updated(applianceId, app.copy(grid = Some(gridId)))), ())
-  }
-
-  def on(applianceId: Int): State[World, Either[Exception, Unit]] = State { world =>
-    val app: Appliance = world.appliance(applianceId)
-    app.grid match {
-      case None =>
-        (world, Left(new RuntimeException("Grid not exist")))
-      case Some(gridId) if app.power > residualPower(world, gridId) =>
-        (world, Left(new RuntimeException("No Power")))
-      case Some(_) =>
-        (world.copy(world.appliance.updated(applianceId, app.copy(isOn = true))), Right(()))
-    }
-  }
-
-  def off(applianceId: Int): State[World, Unit] = State { world =>
-    val app = world.appliance(applianceId)
-    (world.copy(world.appliance.updated(applianceId, app.copy(isOn = false))), ())
-  }
-
-  def residualPower(world: World, gridId: Int): Int = {
-    val grid = world.grid(gridId)
-    grid.capa - world.appliance.filter(_.grid.contains(gridId)).map(_.power).sum
-  }
-
-  val program = for {
-    grid <- createGrid((3000))
-    tv <- createAppliance(150)
-    radio <- createAppliance(30)
-    _ <- plugInto(tv, grid)
-    _ <- plugInto(radio, grid)
-    _ <- on(tv)
-  } yield println(grid, tv, radio)
-
-  println((program run World(Vector(), Vector())).value)
-
+//case class Appliance(var power: Int)
+//case class Grid(var capa:Int, appliances: Set[Int] = Set())
+//
+//case class World(appliance: Vector[Appliance], grid: Vector[Grid]){
+//  def createGrid(power: Int): (Int, World) = {
+//    val grid = Grid(power)
+//    (this.grid.size, copy(grid = this.grid :+ grid))
+//  }
+//
+//  def createAppliance(power: Int): (Int, World) = {
+//    val appliance = Appliance(power)
+//    (this.appliance.size, copy(appliance = this.appliance :+ appliance))
+//  }
+//
+//  def plugInto(applianceId: Int, gridId: Int): World = {
+//    val grid: Grid = this.grid(gridId)
+//    val appendedGrid = grid.copy(appliances = grid.appliances + applianceId)
+//    copy(grid = this.grid.filterNot(_ == grid) :+ appendedGrid)
+//  }
+//
+//  def on(applianceId: Int): Either[Exception, World] = {
+//    val appliance: Appliance = this.appliance(applianceId)
+//    val gridId = grid.indexWhere(_.appliances.contains(applianceId))
+//    if (0 > gridId) {
+//      Left(new RuntimeException("Grid not exist"))
+//    } else if (appliance.power > residualPower(gridId)) {
+//      Left(new RuntimeException("No Power"))
+//    } else {
+//      val grid = this.grid(gridId)
+//      Right(copy(grid = this.grid.updated(gridId, grid.copy(capa = grid.capa - appliance.power))))
+//    }
+//  }
+//
+//  def off(applianceId: Int): World = {
+//    val appliance: Appliance = this.appliance(applianceId)
+//    copy(grid = grid.map(x => {
+//      if (x.appliances.contains(applianceId)) {
+//        x.copy(capa = x.capa + appliance.power)
+//      } else {
+//        x
+//      }
+//    }))
+//  }
+//  def residualPower(gridId: Int):Int = {
+//    grid(gridId).capa
+//  }
+//
+//}
+//
+//object Main extends App {
 //  var world = World(Vector(), Vector())
 //  val (grid, world1) = world.createGrid(3000)
 //  val (tv, world2) = world1.createAppliance(150)
@@ -83,9 +76,8 @@ object Main extends App {
 //  println(world8)
 //  println(world9)
 //  println(world10)
-}
-
-//val (tv, world2) = world1.createAppliance(150)
-//val tv = new Appliance(150), val radio = new Appliance(30)
-//val grid = new Grid(3000)
-
+//}
+//
+////val (tv, world2) = world1.createAppliance(150)
+////val tv = new Appliance(150), val radio = new Appliance(30)
+////val grid = new Grid(3000)
